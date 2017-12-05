@@ -2,7 +2,7 @@
 
 This is a batch file intended for power users to apply some registry and other small patches to Windows 10 to increase privacy and useability.
 
-## List of changes applied
+## List of changes applied so far
 
 * Disable diagnostics and tracking services
 * Disable Windows Defender
@@ -22,8 +22,8 @@ This is a batch file intended for power users to apply some registry and other s
 * Enable seconds in the tray
 * Show file extensions
 * Enables Legacy Boot Loader + F8 Safe Mode 
-** This might slow down booting by a few seconds, but it enables Advanced Boot Options, and I consider it a fair trade-off.
+  * This might slow down booting by a few seconds, but it enables Advanced Boot Options, and I consider it a fair trade-off.
 * Disable Fast Startup (!!!)
-** This might slow down booting by a few seconds too. It's related to the above, and makes sure your system actually shuts down instead of just pretending to. 
+  * This might slow down booting by a few seconds too. It's related to the above, and makes sure your system actually shuts down instead of just pretending to. 
 * Disable Smart Screen? (!!!)
-** This might be a security issue, so make sure you take note of this.
+  * This might be a security issue, so make sure you take note of this.
