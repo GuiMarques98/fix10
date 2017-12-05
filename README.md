@@ -6,6 +6,10 @@ This is a batch file intended for power users to apply some registry and other s
 
 The batch file in question requires administrative privileges to run on a system and is intended to only be run on Windows 10. Regardless of conditions, the script is run at your own risk, and HandleSoft cannot be responsible for increased boot times (will likely happen) or, perhaps even worse, features removed from the system or the system refusing to function or start up properly, or any other adverse side effects. By running the batch file, you accept that you have read this disclaimer and understand its and the script's consequences.
 
+## Notes on Windows 10 editions
+
+Several of the modifications rely on registry settings, some of which are Group Policy settings. Due to Microsoft's will to restrict users, some of the changes might not work in some editions of Windows 10, most notably the Home and Pro editions.
+
 ## List of changes applied so far
 
 * Disable diagnostics and tracking services
