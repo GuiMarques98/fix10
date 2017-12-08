@@ -1,6 +1,6 @@
 # Fix10.bat
 
-This is a batch file intended for power users to apply some registry and other small patches to Windows 10 to increase privacy and useability.
+This is a batch file intended for power users to apply some registry and other small patches to Windows 10 to increase privacy and usability.
 
 ## Disclaimer
 
@@ -26,7 +26,9 @@ Several of the modifications rely on registry settings, some of which are Group 
 * Disable keylogger ("improve typing")
 * Opt out from CEIP
 * Disable Cortana
+* Restore Windows Photo Viewer ([source](https://www.tenforums.com/tutorials/14312-restore-windows-photo-viewer-windows-10-a.html))
 * Win+X: PowerShell to CMD
+* Re-add CMD to Context menu (if Shift down)
 * Enable seconds in the tray
 * Show file extensions
 * Enables Legacy Boot Loader + F8 Safe Mode 
