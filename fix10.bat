@@ -55,7 +55,7 @@ rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// OS version check
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 for /f "tokens=4-5 delims=. " %%i in ('ver') do set VERSION=%%i.%%j
-rem if "%version%" == "10.0" goto win10ok
+if "%version%" == "10.0" goto win10ok
 echo.
 echo.
 echo The operating system does not seem to be Windows 10.
