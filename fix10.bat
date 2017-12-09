@@ -1,6 +1,6 @@
 @echo off & setlocal & rem https://textu.red/e/win10/
                        rem https://github.com/HandleSoft/fix10
-                       rem Fix10 v1.1.2
+                       rem Fix10 v1.1.3
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -29,7 +29,7 @@ echo  FFF     I     X     1   0 0 0
 echo  F       I    X X    1   0   0
 echo  F     IIIII X   X  111   000
 echo.
-echo v1.1.2                     .bat
+echo v1.1.3                     .bat
 echo ===============================
 echo  HandleSoft, https://textu.red
 echo             2 0 1 7
@@ -55,21 +55,20 @@ rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// OS version check
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 for /f "tokens=4-5 delims=. " %%i in ('ver') do set VERSION=%%i.%%j
-if "%version%" == "10.0" goto win10ok
+rem if "%version%" == "10.0" goto win10ok
 echo.
 echo.
-color 4f
 echo The operating system does not seem to be Windows 10.
 echo Running this script in another version of Windows
 echo will cause unpredictable results.
 echo.
 :win10choice
 set /P contanyway=Continue anyway [Y/N]?
-if /I "%c%" == "Y" goto win10ok
-if /I "%c%" == "N" goto endscript
+if /I "%contanyway%" == "Y" goto win10okforce
+if /I "%contanyway%" == "N" goto endscript
 goto win10choice
+:win10okforce
 echo.
-color
 :win10ok
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// List
