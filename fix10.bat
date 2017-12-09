@@ -1,5 +1,27 @@
-@echo off
+@echo off & setlocal & rem https://textu.red/e/win10/
+                       rem https://github.com/HandleSoft/fix10
+                       rem Fix10 v1.1.0
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Config
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+
+rem Enable dropping under %SYSTEMROOT%\System32 (for Run & cmd):
+rem   xqacl.bat: opens an elevated command prompt at given location
+rem   xqgod.bat: opens the All Tasks directory
+rem 0 = disable (default), 1 = enable
+set fix10dropbatchutils=0
+
+rem Enable removing Mixed Reality
+rem 0 = disable (default), 1 = enable
+set fix10removemixed=0
+
+rem Enable deleting Cortana
+rem 0 = disable (default), 1 = enable
+set fix10delcortana=0
+
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Intro
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 echo ===============================
 echo  FFFFF IIIII X   X   1    000
 echo  F       I    X X   11   0   0
@@ -7,16 +29,15 @@ echo  FFF     I     X     1   0 0 0
 echo  F       I    X X    1   0   0
 echo  F     IIIII X   X  111   000
 echo.
-echo v1.0.4                     .bat
+echo v1.1.0                     .bat
 echo ===============================
 echo  HandleSoft, https://textu.red
 echo             2 0 1 7
 echo ===============================
-echo Visit our website for:
-echo   * updates
-echo   * a guide to remove Cortana
 echo.
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Admin check
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 net session >nul 2>&1
 if %errorlevel% == 0 goto adminok
 echo.
@@ -30,22 +51,48 @@ echo.
 pause
 exit
 :adminok
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// OS version check
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+for /f "tokens=4-5 delims=. " %%i in ('ver') do set VERSION=%%i.%%j
+if "%version%" == "10.0" goto win10ok
+echo.
+echo.
+color 4f
+echo The operating system does not seem to be Windows 10.
+echo Running this script in another version of Windows
+echo will cause unpredictable results.
+echo.
+:win10choice
+set /P contanyway=Continue anyway [Y/N]?
+if /I "%c%" == "Y" goto win10ok
+if /I "%c%" == "N" goto endscript
+goto win10choice
+echo.
+color
+:win10ok
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// List
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 echo This batch file will:
 echo.
 echo * Disable diagnostics and tracking services
+echo * Disable advertisements and "tips"
 echo * Disable Windows Defender
 echo * Try to set Updates to Ask before Download
-echo * Uninstall OneDrive
+echo * Uninstall and disable OneDrive
+echo * Disable Feedback notifications
 echo * Disable Bing Search
 echo * Disable Application Telemetry
 echo * Disable Steps Recorder
 echo * Disable "Delivery Optimization"
+echo * Disable Wi-Fi Sense
 echo * Turn off advertising ID
 echo * Disable Suggested app download
 echo   (you will still need to uninstall those already downloaded yourself)
 echo * Disable Windows Spotlight
 echo * Disable keylogger ("improve typing")
+echo * Disable "Getting to know you"
 echo * Opt out from CEIP
 echo * Disable Cortana
 echo * Restore Windows Photo Viewer
@@ -57,6 +104,11 @@ echo * Enables Legacy Boot Loader + F8 Safe Mode (!!!)
 echo * Disable Fast Startup (!!!)
 echo * Disable Smart Screen? (!!!)
 echo.
+echo Modify the file to enable (disabled by default):
+echo * Drops batch utilities
+echo * Remove Mixed Reality
+echo * Delete Cortana
+echo.
 echo The list is long - scroll all the way through!
 echo Some changes may require a reboot afterwards.
 echo Some stuff may not work on 10 Home/Pro!
@@ -65,7 +117,9 @@ echo Hit Ctrl-C and Y or close the window to cancel
 echo Do the above, if you are not 100% sure!
 echo.
 pause
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Disable services
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 sc config dmwappushsvc start= disabled
 sc config "Diagnostics Tracking Service" start= disabled
 sc config DiagTrack start= disabled
@@ -73,22 +127,36 @@ sc config diagnosticshub.standardcollector.service start= disabled
 sc config TrkWks start= disabled
 sc config WMPNetworkSvc start= disabled
 sc config DoSvc start= disabled
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Disable scheduled tasks
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 schtasks /change /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /DISABLE
 schtasks /change /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater" /DISABLE
 schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
 schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
 schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /DISABLE
 schtasks /change /TN "\Microsoft\Windows\AppID\SmartScreenSpecific" /DISABLE
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Search UI firewall
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 powershell -Command New-NetFirewallRule -DisplayName "Search" -Direction Outbound -Action Block -Profile "Domain, Private, Public" -Program "C:\Windows\SystemApps\Microsoft.Windows.Cortana_cw5n1h2txyewy\SearchUI.exe"
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Telemetry stuff
-cmd /c cd %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger & echo > AutoLogger-Diagtrack-Listener.etl & echo Y | cacls AutoLogger-Diagtrack-Listener.etl /d SYSTEM
-rem ///////////////// Registry
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+pushd %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger
+echo > AutoLogger-Diagtrack-Listener.etl
+echo Y | cacls AutoLogger-Diagtrack-Listener.etl /d SYSTEM
+popd
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Registry header
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 echo Windows Registry Editor Version 5.00 > %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Registry HKLM
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU] >> %TEMP%\fix10bat.reg
 echo "AUOptions"=dword:00000002 >> %TEMP%\fix10bat.reg
 echo "NoAutoRebootWithLoggedOnUsers"=dword:00000001 >> %TEMP%\fix10bat.reg
@@ -106,6 +174,7 @@ echo "DODownloadMode"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection] >> %TEMP%\fix10bat.reg
 echo "AllowTelemetry"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "DoNotShowFeedbackNotifications"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection] >> %TEMP%\fix10bat.reg
 echo "AllowTelemetry"=dword:00000000 >> %TEMP%\fix10bat.reg
@@ -116,41 +185,123 @@ echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender] >> %TEMP%\fix10bat.reg
 echo "DisableAntiSpyware"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
-echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced] >> %TEMP%\fix10bat.reg
-echo "DontUsePowerShellOnWinX"=dword:00000001 >> %TEMP%\fix10bat.reg
-echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power] >> %TEMP%\fix10bat.reg
 echo "HiberbootEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
-echo [HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\CloudContent] >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\CloudContent] >> %TEMP%\fix10bat.reg
+echo "DisableSoftLanding"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo "DisableWindowsConsumerFeatures"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo "DisableWindowsSpotlightFeatures"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
-echo [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager] >> %TEMP%\fix10bat.reg
-echo "SilentInstalledAppsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo] >> %TEMP%\fix10bat.reg
+echo "Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\AdvertisingInfo] >> %TEMP%\fix10bat.reg
 echo "DisabledByGroupPolicy"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
-echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Input\TIPC] >> %TEMP%\fix10bat.reg
-echo "Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
-echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\Software\Microsoft\SQMClient\Windows] >> %TEMP%\fix10bat.reg
 echo "CEIPEnable"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
-echo [HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat] >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat] >> %TEMP%\fix10bat.reg
 echo "AITEnable"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "DisableUAR"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search] >> %TEMP%\fix10bat.reg
 echo "AllowCortana"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "DisableWebSearch"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo "ConnectedSearchUseWeb"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "ConnectedSearchPrivacy"=dword:00000003 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\OneDrive] >> %TEMP%\fix10bat.reg
+echo "DisableFileSyncNGSC"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\OneDrive] >> %TEMP%\fix10bat.reg
+echo "PreventNetworkTrafficPreUserSignIn"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\InputPersonalization] >> %TEMP%\fix10bat.reg
+echo "AllowInputPersonalization"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "RestrictImplicitInkCollection"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config] >> %TEMP%\fix10bat.reg
+echo "AutoConnectAllowedOEM"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Registry HKCU for current user
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced] >> %TEMP%\fix10bat.reg
+echo "DontUsePowerShellOnWinX"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo "HideFileExt"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "ShowSyncProviderNotifications"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\CloudContent] >> %TEMP%\fix10bat.reg
+echo "DisableWindowsConsumerFeatures"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo "DisableWindowsSpotlightFeatures"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\PenWorkspace] >> %TEMP%\fix10bat.reg
+echo "PenWorkspaceAppSuggestionsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager] >> %TEMP%\fix10bat.reg
+echo "RotatingLockScreenEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "RotatingLockScreenOverlayEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SilentInstalledAppsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SoftLandingEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SubscribedContent-310093Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SystemPaneSuggestionsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Input\TIPC] >> %TEMP%\fix10bat.reg
+echo "Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Search] >> %TEMP%\fix10bat.reg
 echo "CortanaEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "BingSearchEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
-echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced] >> %TEMP%\fix10bat.reg
+echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Personalization\Settings] >> %TEMP%\fix10bat.reg
+echo "AcceptedPrivacyPolicy"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore] >> %TEMP%\fix10bat.reg
+echo "HarvestContacts"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Registry HKCU for default user
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced] >> %TEMP%\fix10bat.reg
+echo "DontUsePowerShellOnWinX"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo "HideFileExt"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "ShowSyncProviderNotifications"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\Software\Policies\Microsoft\Windows\CloudContent] >> %TEMP%\fix10bat.reg
+echo "DisableWindowsConsumerFeatures"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo "DisableWindowsSpotlightFeatures"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\PenWorkspace] >> %TEMP%\fix10bat.reg
+echo "PenWorkspaceAppSuggestionsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager] >> %TEMP%\fix10bat.reg
+echo "RotatingLockScreenEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "RotatingLockScreenOverlayEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SilentInstalledAppsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SoftLandingEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SubscribedContent-310093Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SystemPaneSuggestionsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Input\TIPC] >> %TEMP%\fix10bat.reg
+echo "Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Search] >> %TEMP%\fix10bat.reg
+echo "CortanaEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "BingSearchEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Personalization\Settings] >> %TEMP%\fix10bat.reg
+echo "AcceptedPrivacyPolicy"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore] >> %TEMP%\fix10bat.reg
+echo "HarvestContacts"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Registry HKCR
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_CLASSES_ROOT\Drive\shell\cmd2] >> %TEMP%\fix10bat.reg
 echo @="@shell32.dll,-8506" >> %TEMP%\fix10bat.reg
@@ -181,6 +332,10 @@ echo "NoWorkingDirectory"="" >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_CLASSES_ROOT\Directory\Background\shell\cmd2\command] >> %TEMP%\fix10bat.reg
 echo @="cmd.exe /s /k pushd \"%%V\"" >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Registry: Photo Viewer
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 echo. >> %TEMP%\fix10bat.reg
 echo ; ======================================================================================== >> %TEMP%\fix10bat.reg
 echo ; https://www.tenforums.com/tutorials/14312-restore-windows-photo-viewer-windows-10-a.html >> %TEMP%\fix10bat.reg
@@ -424,12 +579,54 @@ echo ".tif"="PhotoViewer.FileAssoc.Tiff" >> %TEMP%\fix10bat.reg
 echo ".tiff"="PhotoViewer.FileAssoc.Tiff" >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 reg import %TEMP%\fix10bat.reg
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Legacy Bootloader & Safe Mode
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 bcdedit /set {current} bootmenupolicy Legacy
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Uninstall OneDrive
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 %SystemRoot%\System32\OneDriveSetup /uninstall 2>nul
 %SystemRoot%\SysWOW64\OneDriveSetup /uninstall 2>nul
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Batch utilities (if enabled)
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+if not %fix10dropbatchutils% == 1 goto fix10_nodropbatchutils 
+echo. > %SYSTEMROOT%\System32\xqacl.bat
+echo. > %SYSTEMROOT%\System32\xqgod.bat
+echo @echo off >> %SYSTEMROOT%\System32\xqacl.bat
+echo if not %1.==. goto gotargs
+echo powershell -Command Start-Process cmd -Verb runas -WorkingDirectory "%cd%" -ArgumentList /k,cd,"%cd%" >> %SYSTEMROOT%\System32\xqacl.bat
+echo goto :eof >> %SYSTEMROOT%\System32\xqacl.bat
+echo :gotargs >> %SYSTEMROOT%\System32\xqacl.bat
+echo powershell -Command Start-Process cmd -Verb runas -WorkingDirectory "%cd%" -ArgumentList /c,%* >> %SYSTEMROOT%\System32\xqacl.bat
+echo @start "" "explorer shell:::{ED7BA470-8E54-465E-825C-99712043E01C}" >> %SYSTEMROOT%\System32\xqgod.bat
+:fix10_nodropbatchutils 
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Remove Mixed Reality (if enabled)
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+if not %fix10removemixed% == 1 goto fix10_noremovemixed
+reg add HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Holographic4 /v FirstRunSucceeded /t REG_DWORD /d 0
+:fix10_noremovemixed 
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Delete Cortana (if enabled)
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+if not %fix10delcortana% == 1 goto fix10_nodelcortana
+set dirbase="%SYSTEMROOT%\SystemApps\Microsoft.Windows.Cortana_"
+for /D %%x in (%dirbase%*) do if not defined dir set "dir=%%x"
+set proc="SearchUI.exe"
+taskkill /f /im %proc%
+takeown /f %dir% /r
+icacls "%dir%\*" /t /c /grant %username%:f
+timeout 2 & taskkill /f /im %proc% & rd /s /q %dir%
+timeout 2 & taskkill /f /im %proc% & rd /s /q %dir%
+timeout 2 & taskkill /f /im %proc% & rd /s /q %dir%
+timeout 2 & taskkill /f /im %proc% & rd /s /q %dir%
+timeout 2 & taskkill /f /im %proc% & rd /s /q %dir%
+:fix10_nodelcortana
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Script complete
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 color 2f
 echo.
 echo.
@@ -454,7 +651,7 @@ echo open Run, and use this command:
 echo     ms-settings:privacy
 echo.
 call :getsecondparameter %CMDCMDLINE%
-if /i not "%CMDFLAG%" == "/c" goto eof
+if /i not "%CMDFLAG%" == "/c" goto endscript
 echo You can now close this window.
 echo.
 :closewindow
@@ -463,8 +660,9 @@ goto closewindow
 :getsecondparameter
 set CMDFLAG=%2
 goto return
-:eof
+:endscript
 pause
 echo.
 color
+endlocal
 :return

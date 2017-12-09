@@ -13,17 +13,21 @@ Several of the modifications rely on registry settings, some of which are Group 
 ## List of changes applied so far
 
 * Disable diagnostics and tracking services
+* Disable advertisements and "tips"
 * Disable Windows Defender
 * Try to set Updates to Ask before Download
-* Uninstall OneDrive
+* Uninstall and disable OneDrive
+* Disable Feedback notifications
 * Disable Bing Search
 * Disable Application Telemetry
 * Disable Steps Recorder
 * Disable "Delivery Optimization"
+* Disable Wi-Fi Sense
 * Turn off advertising ID
 * Disable Suggested app download (you will still need to uninstall those already downloaded yourself)
 * Disable Windows Spotlight
 * Disable keylogger ("improve typing")
+* Disable "Getting to know you"
 * Opt out from CEIP
 * Disable Cortana
 * Restore Windows Photo Viewer ([source](https://www.tenforums.com/tutorials/14312-restore-windows-photo-viewer-windows-10-a.html))
@@ -37,3 +41,14 @@ Several of the modifications rely on registry settings, some of which are Group 
   * This might slow down booting by a few seconds too. It's related to the above, and makes sure your system actually shuts down instead of just pretending to. 
 * Disable Smart Screen? (!!!)
   * This might be a security issue, so make sure you take note of this.
+
+### Optional changes (must be enabled by editing the file)
+
+The batch file has a configuration section at the beginning with a few options. These options allow the following:
+
+* fix10dropbatchutils (0 disables (default), 1 enables)
+  * Drops two files, xqacl.bat and xqgod.bat under System32, which add the xqacl and xqgod commands for the Run dialog and terminals. xqacl allows opening an elevated command line, while xqgod opens the All Tasks "god mode" window.
+* fix10removemixed (0 disables (default), 1 enables) 
+  * If enabled, sets the Holographic FirstRunSucceeded flag to 0. If the computer is restarted with this flag, Mixed Reality should be automatically uninstalled from this machine.
+* fix10delcortana (0 disables (default), 1 enables) 
+  * If enabled, this will delete Cortana and its files from the computer. To reinstall it, you must disable this flag and reinstall the package manually through PowerShell.
