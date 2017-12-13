@@ -1,6 +1,6 @@
 # Fix10.bat
 
-This is a batch file intended for power users to apply some registry and other small patches to Windows 10 to increase privacy and usability.
+This is a batch file intended for power users to apply some registry and other small patches to Windows 10 to increase privacy and usability. If you run this script, it is advised to run it every time your system goes through a major Windows 10 update, as some settings might reset.
 
 ## Disclaimer
 
@@ -8,7 +8,7 @@ The batch file in question requires administrative privileges to run on a system
 
 ## Notes on Windows 10 editions
 
-Several of the modifications rely on registry settings, some of which are Group Policy settings. Due to Microsoft's will to restrict users, some of the changes might not work in some editions of Windows 10, most notably the Home and Pro editions.
+Several of the modifications rely on registry settings, some of which are Group Policy settings. Due to Microsoft's will to restrict users, some of the changes might not work in some editions of Windows 10, most notably the Home and Pro editions. It is also impossible to guarantee the functionality of the changes in future upgrades.
 
 ## List of changes applied so far
 
@@ -16,6 +16,7 @@ Several of the modifications rely on registry settings, some of which are Group 
 * Disable advertisements and "tips"
 * Disable Windows Defender
 * Try to set Updates to Ask before Download
+* Disable Windows Update automatic restarts
 * Uninstall and disable OneDrive
 * Disable Feedback notifications
 * Disable Bing Search
@@ -31,16 +32,16 @@ Several of the modifications rely on registry settings, some of which are Group 
 * Opt out from CEIP
 * Disable Cortana
 * Restore Windows Photo Viewer ([source](https://www.tenforums.com/tutorials/14312-restore-windows-photo-viewer-windows-10-a.html))
+* Re-enable Task Manager, Registry Editor and Command Interpreter
 * Win+X: PowerShell to CMD
 * Re-add CMD to Context menu (if Shift down)
 * Enable seconds in the tray
-* Show file extensions
+* Show file extensions and hidden files
+* Disable Data Collection Publishing Service
 * Enables Legacy Boot Loader + F8 Safe Mode 
   * This might slow down booting by a few seconds, but it enables Advanced Boot Options, and I consider it a fair trade-off.
 * Disable Fast Startup (!!!)
   * This might slow down booting by a few seconds too. It's related to the above, and makes sure your system actually shuts down instead of just pretending to. 
-* Disable Smart Screen? (!!!)
-  * This might be a security issue, so make sure you take note of this.
 
 ### Optional changes (must be enabled by editing the file)
 
@@ -49,6 +50,10 @@ The batch file has a configuration section at the beginning with a few options. 
 * fix10dropbatchutils (0 disables (default), 1 enables)
   * Drops two files, xqacl.bat and xqgod.bat under System32, which add the xqacl and xqgod commands for the Run dialog and terminals. xqacl allows opening an elevated command line, while xqgod opens the All Tasks "god mode" window.
 * fix10removemixed (0 disables (default), 1 enables) 
-  * If enabled, sets the Holographic FirstRunSucceeded flag to 0. If the computer is restarted with this flag, Mixed Reality should be automatically uninstalled from this machine.
+  * If enabled, sets the Holographic FirstRunSucceeded flag to 0. If the computer is restarted with this flag, Mixed Reality should be automatically uninstalled from the computer.
 * fix10delcortana (0 disables (default), 1 enables) 
-  * If enabled, this will delete Cortana and its files from the computer. To reinstall it, you must disable this flag and reinstall the package manually through PowerShell.
+  * If enabled, the script will delete Cortana and its files from the computer. To reinstall it, you must disable this flag and reinstall the package manually through PowerShell.
+* fix10disablesmartscreen (0 disables (default), 1 enables) 
+  * If enabled, the script will disable SmartScreen. This might be a security issue, and is not recommended, if the computer will be actively used by non-power users.
+* fix10installbash (0 disables (default), 1 enables) 
+  * If enabled, the script will enable Developer Mode and initiate the installation of the Windows Subsystem for Linux. The subsystem will not be installed if it is already detected.
