@@ -12,6 +12,8 @@ Several of the modifications rely on registry settings, some of which are Group 
 
 ## List of changes applied so far
 
+The changes are described in more detail in `DOCUMENT.md`.
+
 * Disable diagnostics and tracking services
 * Disable advertisements and "tips"
 * Disable Windows Defender
