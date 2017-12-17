@@ -163,7 +163,7 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\OneDrive`
 * `PreventNetworkTrafficPreUserSignIn`=`dword:00000001`
-  * Disables OneDrive on the computer. The exact value prevents OneDrive from generating any network traffic prior to the user signing in. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
+  * Disables OneDrive on the computer. The exact behavior is to prevent OneDrive from generating any network traffic prior to the user signing in. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\InputPersonalization`
 * `AllowInputPersonalization`=`dword:00000000`
@@ -227,7 +227,7 @@ These changes all apply to `HKEY_CURRENT_USER` and therefore only affect the use
 * `SubscribedContent-338389Enabled`=`dword:00000000`
   * Disables "*Get tips, tricks, and suggestions as you use Windows*" [(Source)](https://www.reddit.com/r/sysadmin/comments/7bl1f2/has_anyone_found_a_canonical_mapping_of_windows/)
 * `SubscribedContent-338393Enabled`=`dword:00000000`
-  * Disables "*Get tips, tricks, and suggestions as you use Windows*" [(Source)](https://www.reddit.com/r/sysadmin/comments/7bl1f2/has_anyone_found_a_canonical_mapping_of_windows/)
+  * Disables "*Show me suggested content in the Settings app*" [(Source)](https://www.reddit.com/r/sysadmin/comments/7bl1f2/has_anyone_found_a_canonical_mapping_of_windows/)
 * `SystemPaneSuggestionsEnabled`=`dword:00000000`
   * Disables app suggestions in the Start Menu.
 
@@ -275,7 +275,7 @@ These changes all apply to `HKEY_CURRENT_USER` and therefore only affect the use
   * Disables Tailored Experiences with Diagnostics Data after feature updates. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/basic-level-windows-diagnostic-events-and-fields-1703)
 
 # Registry HKCU for default user
-These changes all apply to `HKEY_USERS\.DEFAULT` and therefore affects the system or login user. The exact changes are the same applied for the current user in the previous section.
+These changes all apply to `HKEY_USERS\.DEFAULT` and therefore affects the system or login user. The changed values are the same applied for the current user in the previous section.
 
 # Registry HKCR
 These changes all apply to `HKEY_CLASSES_ROOT`. The only change done here is the addition of the "Open Command Window Here" option under the right-click menu of the File Explorer. This option has a localized name, an icon, and can only be viewed if Shift is held when the right-click menu is opened (to always show the option, remove the lines with `Extended`).
