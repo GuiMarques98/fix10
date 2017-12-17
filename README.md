@@ -42,8 +42,6 @@ The changes are described in more detail in `DOCUMENT.md`.
 * Disable Data Collection Publishing Service
 * Enables Legacy Boot Loader + F8 Safe Mode 
   * This might slow down booting by a few seconds, but it enables Advanced Boot Options, and I consider it a fair trade-off.
-* Disable Fast Startup (!!!)
-  * This might slow down booting by a few seconds too. It's related to the above, and makes sure your system actually shuts down instead of just pretending to. 
 
 ### Optional changes (must be enabled by editing the file)
 
@@ -59,3 +57,5 @@ The batch file has a configuration section at the beginning with a few options. 
   * If enabled, the script will disable SmartScreen. This might be a security issue, and is not recommended, if the computer will be actively used by non-power users.
 * fix10installbash (0 disables (default), 1 enables) 
   * If enabled, the script will enable Developer Mode and initiate the installation of the Windows Subsystem for Linux. The subsystem will not be installed if it is already detected.
+* fix10disablehiberboot (0 disables (default), 1 enables) 
+  * If enabled, the script will disable Fast Startup, making sure your system actually shuts down instead of just pretending to. This is especially useful for multi-boot setups.

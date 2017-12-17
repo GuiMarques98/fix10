@@ -1,24 +1,30 @@
 @echo off & setlocal & rem https://textu.red/e/win10/
                        rem https://github.com/HandleSoft/fix10
-                       rem Fix10 v1.1.4
+                       rem Fix10 v1.1.5
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 
 rem Unless otherwise noted, 0 disables and 1 enables, 0 is default
+rem              | change only this column under this section!
 
 rem Enable dropping under %SYSTEMROOT%\System32 (for Run & cmd):
 rem   xqacl.bat: opens an elevated command prompt at given location
 rem   xqgod.bat: opens the All Tasks directory
-set fix10dropbatchutils=0
+call :setdefault 0 fix10dropbatchutils
 rem Enable removing Mixed Reality
-set fix10removemixed=0
+call :setdefault 0 fix10removemixed
 rem Enable deleting Cortana
-set fix10delcortana=0
+call :setdefault 0 fix10delcortana
 rem Enable disabling Smart Screen
-set fix10disablesmartscreen=0
+call :setdefault 0 fix10disablesmartscreen
 rem Enable installing the Linux Subsystem (will also enable Developer Mode!!)
-set fix10installbash=0
+call :setdefault 0 fix10installbash
+rem Enable disabling Fast Startup (Hiberboot)
+call :setdefault 0 fix10disablehiberboot
+
+rem Command line flags:
+rem /q - quiet mode, will not ask for a key press to confirm or at exit
 
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Intro
@@ -30,27 +36,47 @@ echo  FFF     I     X     1   0 0 0
 echo  F       I    X X    1   0   0
 echo  F     IIIII X   X  111   000
 echo.
-echo v1.1.4                     .bat
+echo v1.1.5                     .bat
 echo ===============================
 echo  HandleSoft, https://textu.red
 echo             2 0 1 7
 echo ===============================
 echo.
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Initialize flags
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+set silent=0
+for %%a in (%*) do if /i "%%a" equ "/q" set silent=1
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Admin check
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 net session >nul 2>&1
 if %errorlevel% == 0 goto adminok
+if "%silent%" == "1" goto adminquiet
 echo.
-echo.
-color 4f
 echo This batch file requires admin rights.
-echo Please right-click this file in Explorer
-echo and select to "Run as Administrator".
+echo If a dialog comes up, please choose the affirmative option.
 echo.
+timeout 5
+:adminquiet
+echo %* > %TEMP%\fix10args.tmp
+for /f %%a in ('powershell -Command "$ErrorActionPreference = \"SilentlyContinue\"; Start-Process \"%~f0\" -Verb Runas -ErrorAction SilentlyContinue -ErrorVariable ElevatedError -ArgumentList $(Get-Content \"%TEMP%\fix10args.tmp\") ; echo $ElevatedError.Count"') do set adminfailed=%%a
+if %adminfailed% == 0 goto adminok_endscript
+echo.
+echo Could not elevate the script.
+echo Try right-clicking the batch file and
+echo choosing "Run as Administrator".
+echo.
+if "%silent%" == "0" pause
+goto endscriptnokey
+:adminok_endscript
+if "%silent%" == "1" goto endscriptnokey
+echo.
+echo A new window has been opened for the
+echo elevated script.
 echo.
 pause
-exit
+goto endscriptnokey
 :adminok
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// OS version check
@@ -74,6 +100,7 @@ echo.
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// List
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+if "%silent%" == "1" goto nofix10intro
 echo This batch file will:
 echo.
 echo * Disable diagnostics and tracking services
@@ -104,7 +131,6 @@ echo * Enable seconds in the tray
 echo * Show file extensions and hidden files
 echo * Disable Data Collection Publishing Service
 echo * Enables Legacy Boot Loader + F8 Safe Mode (!!!)
-echo * Disable Fast Startup (!!!)
 echo.
 echo Modify the file to enable (disabled by default):
 echo * Drops batch utilities
@@ -112,6 +138,7 @@ echo * Remove Mixed Reality
 echo * Delete Cortana
 echo * Disable Smart Screen
 echo * Install the Linux Subsystem
+echo * Disable Fast Startup
 echo.
 echo The list is long - scroll all the way through!
 echo Some changes may require a reboot afterwards.
@@ -121,6 +148,7 @@ echo Hit Ctrl-C and Y or close the window to cancel
 echo Do the above, if you are not 100% sure!
 echo.
 pause
+:nofix10intro
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Disable services
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -176,6 +204,7 @@ echo "AUOptions"=dword:00000002 >> %TEMP%\fix10bat.reg
 echo "AUPowerManagement"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "NoAutoRebootWithLoggedOnUsers"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo "RebootRelaunchTimeout"=dword:000005a0 >> %TEMP%\fix10bat.reg
+echo "RebootRelaunchTimeoutEnabled"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update] >> %TEMP%\fix10bat.reg
 echo "AUOptions"=dword:00000002 >> %TEMP%\fix10bat.reg
@@ -197,6 +226,7 @@ echo "DoNotShowFeedbackNotifications"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Siuf\Rules] >> %TEMP%\fix10bat.reg
 echo "NumberOfSIUFInPeriod"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "PeriodInNanoSeconds"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection] >> %TEMP%\fix10bat.reg
 echo "AllowTelemetry"=dword:00000000 >> %TEMP%\fix10bat.reg
@@ -206,9 +236,6 @@ echo "PreventDeviceMetadataFromNetwork"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender] >> %TEMP%\fix10bat.reg
 echo "DisableAntiSpyware"=dword:00000001 >> %TEMP%\fix10bat.reg
-echo. >> %TEMP%\fix10bat.reg
-echo [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power] >> %TEMP%\fix10bat.reg
-echo "HiberbootEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\CloudContent] >> %TEMP%\fix10bat.reg
 echo "DisableSoftLanding"=dword:00000001 >> %TEMP%\fix10bat.reg
@@ -281,6 +308,7 @@ echo "SubscribedContent-310093Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338387Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338388Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338389Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SubscribedContent-338393Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SystemPaneSuggestionsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Input\TIPC] >> %TEMP%\fix10bat.reg
@@ -341,6 +369,7 @@ echo "SubscribedContent-310093Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338387Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338388Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338389Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SubscribedContent-338393Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SystemPaneSuggestionsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Input\TIPC] >> %TEMP%\fix10bat.reg
@@ -724,8 +753,15 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /v "Allo
 start "" powershell -command "$host.ui.RawUI.WindowTitle = \"Linux Subsystem Installer\"; Enable-WindowsOptionalFeature -Online -FeatureName \"Microsoft-Windows-Subsystem-Linux\" -NoRestart; $host.ui.RawUI.WindowTitle = \"[Finished] Linux Subsystem Installer\"; pause"
 :fix10_noinstallbash
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Disable Fast Startup (if enabled)
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+if not %fix10disablehiberboot% == 1 goto fix10_nodisablehiberboot
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d "0" /f
+:fix10_nodisablehiberboot
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Script complete
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+if "%silent%" == "1" goto endscriptnokey
 color 2f
 echo.
 echo.
@@ -760,11 +796,16 @@ echo.
 :closewindow
 pause >NUL 2>NUL
 goto closewindow
-:getsecondparameter
-set CMDFLAG=%2
+:setdefault                 rem call :setdefault value key
+if defined %2 goto :eof     rem   Runs `set key=value` if key is 
+set %2=%1                   rem   not already defined
 goto :eof
+:getsecondparameter         rem call :getsecondparameter A B C D ...
+set CMDFLAG=%2              rem   Stores second parameter given (B)
+goto :eof                   rem   to variable named CMDFLAG
 :endscript
 pause
+:endscriptnokey
 echo.
 color
 endlocal
