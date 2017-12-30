@@ -1,6 +1,6 @@
 @echo off & setlocal & rem https://textu.red/e/win10/
-                       rem https://github.com/HandleSoft/fix10
-                       rem Fix10 v1.1.5
+                       rem https://github.com/TeamYogh/fix10
+                       rem Fix10 v1.2.0
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -36,9 +36,9 @@ echo  FFF     I     X     1   0 0 0
 echo  F       I    X X    1   0   0
 echo  F     IIIII X   X  111   000
 echo.
-echo v1.1.5                     .bat
+echo v1.2.0                     .bat
 echo ===============================
-echo  HandleSoft, https://textu.red
+echo   TeamYogh, https://textu.red
 echo             2 0 1 7
 echo ===============================
 echo.
