@@ -1,9 +1,9 @@
 
 # Fix10.bat full documentation
-## for version 1.1.5
-This document provides a list of the changes performed by Fix10.bat, as well as a detailed explanation for every one of them. 
+## for version 1.2.0
+This document provides a list of the changes performed by Fix10.bat, as well as a detailed explanation for each one of them. 
 
-It is not known whether any of the changes are restricted to specific versions of Windows 10 (original, Anniversary, Creators, Fall Creators...) or editions (Home, Pro, Enterprise), but it is likely that some of the changes will not work on Home or Pro.
+For most of the changes, it is not known whether they are restricted to specific versions of Windows 10 (original, Anniversary, Creators, Fall Creators...) or editions (Home, Pro, Enterprise). If such information is known, it will be indicated for the affected changes.
 
 The documentation will be provided in sections ordered according to their order of appearance in the source code of the batch file itself.
 
@@ -17,12 +17,12 @@ The batch script requires administrative rights and checks whether the OS being 
 Several of the services are either disabled here or set to start on demand (so not automatically on startup).
 
 ## DiagTrack, Diagnostics Tracking Service
-This service is also known as the **Connected User Experiences and Telemetry** starting from Windows 10 Anniversary Update onwards. DiagTrack is the service's actual underlying technical name, and is also referred by Fix10.bat to maintain compatibility. 
+This service is also known as the **Connected User Experiences and Telemetry** starting from Windows 10 Anniversary Update onwards. DiagTrack is the service's actual underlying technical name, and is also how Fix10.bat refers to it in order to maintain compatibility. 
 
 The service in question is used to upload telemetry information to Microsoft's servers, and the data sent is described in detail on Microsoft's website: https://docs.microsoft.com/en-us/windows/configuration/configure-windows-telemetry-in-your-organization
 > Use this article to make informed decisions about how you might configure telemetry in your organization. Telemetry is a term that means different things to different people and organizations. For this article, we discuss telemetry as system data that is uploaded by the **Connected User Experience and Telemetry** component. The telemetry data is used to help keep Windows devices secure by identifying malware trends and other threats and to help Microsoft improve the quality of Windows and Microsoft services.
 
-Disabling the service is used as a preventive measure to block any data being sent. The drawbacks of leaving such telemetry on include its intrusiveness, active usage of the Internet connection (especially a problem on metered or limited connections) and the questionable level of privacy. 
+Disabling the service is used as a preventive measure to block any data from being sent. The drawbacks of leaving such telemetry on include its intrusiveness, questionable impact on privacy, and active usage of the active network connection (especially a problem on metered or limited connections). 
 
 ## dmwappushsvc, Dmwappushservice
 This service is the WAP Push Message Routing Service. Microsoft has not documented this service extensively, but it is used for system bootstrapping and provisioning, and is often also considered to be connected with telemetry (see the service above), so it is often recommended to disable it along DiagTrack.
@@ -33,13 +33,13 @@ This service is the WAP Push Message Routing Service. Microsoft has not document
 The full name of this service is *Microsoft (R) Diagnostics Hub Standard Collector Service*. The service collected real-time ETW event data and processes it for diagnostic purposes. Since it is connected to telemetry, it is often disabled as well.
 
 ## TrkWks
-TrkWks is the technical name of the *Distributed Link Tracking Client* service, which "maintains links between NTFS files within a computer or across computers in a network domain." The service is disabled mostly for optimization and telemetry purposes.
+TrkWks is the technical name of the *Distributed Link Tracking Client* service, which "*maintains links between NTFS files within a computer or across computers in a network domain*". The service is disabled mostly for optimization and telemetry purposes.
 
 ## WMPNetworkSvc
-The *Windows Media Player Network Sharing Service* shares Windows Media Player libraries with other devices using UPnP. It is sometimes connected with high CPU usage and most people are likely to use something else for playing media, which is why the service isn't of any importance to them.
+The *Windows Media Player Network Sharing Service* shares Windows Media Player libraries with other devices using UPnP. It is sometimes connected with high CPU usage and most people are likely to use something else for playing media, which is why the service isn't of any importance for them.
 
 ## DoSvc
-DoSvc, or the *Delivery Optimization Service*, is used for Delivery Optimization and download updates on Windows Update. Since it seems necessary in order to use Windows Update, the service is not disabled, but rather set to start up on demand (which is the default setting on some newer editions of Windows 10 as well).
+DoSvc, or the *Delivery Optimization Service*, is used for Delivery Optimization and download updates on Windows Update. Since it seems necessary in order to Windows Update to function properly, the service is not disabled, but rather set to start up on demand (which is the default setting on some newer editions of Windows 10 as well).
 
 ## DcpSvc
 DcpSvc, or *DataCollectionPublishingService*, was used in older versions of Windows 10 to send data to other applications. Starting it manually seems to be the default setting for it, and this is what Fix10.bat sets it to as well (since applications may need this service to run properly). The service is not present in newer versions of Windows 10 (Creators Update onwards?).
@@ -48,13 +48,13 @@ DcpSvc, or *DataCollectionPublishingService*, was used in older versions of Wind
 All the tasks mentioned here are disabled with the `schtasks` command.
 
 ## Microsoft Compatibility Appraiser
-This scheduled task is used with the Customer Experience Improvement Program (CEIP), and is disabled, since Fix10.bat opts the computer out from CEIP. The task itself is used to check for program compatibility upon a major Windows 10 update, and could even be connected to program uninstallations on upgrades.
+This scheduled task is used with the Customer Experience Improvement Program (CEIP), and is disabled, since Fix10.bat opts the computer out from CEIP. The task itself is used to check for program compatibility upon a major Windows 10 update, and could even be responsible for programs being uninstalled on upgrades.
 
 ## ProgramDataUpdater
 This scheduled task is used with the Customer Experience Improvement Program (CEIP), and is disabled, since Fix10.bat opts the computer out from CEIP. Based on the task's name, it is used to collect program data of some kind.
 
 ## Consolidator, KernelCeipTask, UsbCeip
-These scheduled tasks are used with the Customer Experience Improvement Program (CEIP), and is disabled, since Fix10.bat opts the computer out from CEIP. Consolidator is responsible for running `wsqmcons.exe`, which lacks any documentation but 
+These scheduled tasks are used with the Customer Experience Improvement Program (CEIP), and is disabled, since Fix10.bat opts the computer out from CEIP. Consolidator is responsible for running `wsqmcons.exe`, for which the only documentation provided is 
 > This program collects and sends usage data to Microsoft.
 KernelCeipTask (The Kernel CEIP (Customer Experience Improvement Program) Task) "*collects additional information about the system and sends this data to Microsoft.*"
 UsbCeip `collects Universal Serial Bus related statistics and information about your machine and sends it to the Windows Device Connectivity engineering group at Microsoft.`
@@ -92,7 +92,7 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows`
 * `DisableFileSync`=`dword:00000001`
-  * Disables OneDrive's file synchronization and effectively the integration.
+  * Disables OneDrive's file synchronization and effectively the integration itself.
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config`
 * `DownloadMode`=`dword:00000000`
@@ -104,7 +104,7 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 * `AllowTelemetry`=`dword:00000000`
   * Sets the Telemetry level to Security, which according to Microsoft, will transmit "[i]nformation that’s required to help keep Windows, Windows Server, and System Center secure, including data about the Connected User Experience and Telemetry component settings, the Malicious Software Removal Tool, and Windows Defender." [(Source)](https://docs.microsoft.com/en-us/windows/configuration/configure-windows-telemetry-in-your-organization)
 * `DoNotShowFeedbackNotifications`=`dword:00000001`
-  * Disables feedback notifications sent from the Feedback app. [(Source)](https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#experience-donotshowfeedbacknotifications)
+  * Disables feedback notifications sent by or via the Feedback app. [(Source)](https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#experience-donotshowfeedbacknotifications)
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection`
 * `AllowTelemetry`=`dword:00000000`
@@ -113,11 +113,11 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Siuf\Rules`
 * `PeriodInNanoSeconds`=`dword:00000000`
 * `NumberOfSIUFInPeriod`=`dword:00000000`
-  * Disables Windows from asking you for feedback. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
+  * Prevents Windows from asking you for feedback. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata`
 * `PreventDeviceMetadataFromNetwork`=`dword:00000001`
-  * Disables Windows from retrieving device metadata online.  [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
+  * Prevents Windows from retrieving device metadata online.  [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender`
 * `DisableAntiSpyware`=`dword:00000001`
@@ -131,11 +131,11 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo`
 * `Enabled`=`dword:00000000`
-  * Disables apps from using the advertising ID and resets it.  [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
+  * Disables apps from using the advertising ID and resets it. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 
 ## `HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\AdvertisingInfo`
 * `DisabledByGroupPolicy`=`dword:00000001`
-  * Disables apps from using the advertising ID and resets it.  [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
+  * Disables apps from using the advertising ID and resets it. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 
 ## `HKEY_LOCAL_MACHINE\Software\Microsoft\SQMClient\Windows`
 * `CEIPEnable`=`dword:00000000`
@@ -153,13 +153,13 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 * `DisableWebSearch`=`dword:00000001`
   * Disallows web searches from being done using Windows Search. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 * `ConnectedSearchUseWeb`=`dword:00000000`
-  * Disables searching the web or web results from being shown in Windows Search. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
+  * Disables searching the web via Windows Search or web results from being shown in Windows Search. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 * `ConnectedSearchPrivacy`=`dword:00000003`
   * Only sets anonymous info to be sent with Bing in web search, should it be enabled. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\OneDrive`
 * `DisableFileSyncNGSC`=`dword:00000001`
-  * Disables OneDrive's file synchronization and effectively the integration. (To be exact, the value disables the OneDrive for Business Next Generation Sync Client, hence NGSC, but as a result OneDrive is disabled completely). [(Source)](https://support.microsoft.com/en-us/help/3145959/onedrive-for-business-next-generation-sync-client-onedrive-exe-exits-i)
+  * Disables OneDrive's file synchronization and effectively the integration itself. (To be exact, the value disables the OneDrive for Business Next Generation Sync Client, hence NGSC, but as a result OneDrive is disabled completely). [(Source)](https://support.microsoft.com/en-us/help/3145959/onedrive-for-business-next-generation-sync-client-onedrive-exe-exits-i)
 
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\OneDrive`
 * `PreventNetworkTrafficPreUserSignIn`=`dword:00000001`
@@ -241,9 +241,9 @@ These changes all apply to `HKEY_CURRENT_USER` and therefore only affect the use
 * `BingSearchEnabled`=`dword:00000000`
   * Disables online Bing searching through Windows Search from the current user.
 * `HistoryViewEnabled`=`dword:00000000`
-  * Disables Cortana from showing the history.
+  * Prevents Cortana from showing the (search?) history.
 * `DeviceHistoryEnabled`=`dword:00000000`
-  * Disables Cortana from accessing the device history.
+  * Prevents Cortana from accessing the device history.
 
 ## `HKEY_CURRENT_USER\SOFTWARE\Microsoft\Personalization\Settings`
 * `AcceptedPrivacyPolicy`=`dword:00000000`
@@ -275,7 +275,7 @@ These changes all apply to `HKEY_CURRENT_USER` and therefore only affect the use
   * Disables Tailored Experiences with Diagnostics Data after feature updates. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/basic-level-windows-diagnostic-events-and-fields-1703)
 
 # Registry HKCU for default user
-These changes all apply to `HKEY_USERS\.DEFAULT` and therefore affects the system or login user. The changed values are the same applied for the current user in the previous section.
+These changes all apply to `HKEY_USERS\.DEFAULT` and therefore affects the system or login user. The changed values are the same applied for the current user in the previous section. Despite the name, this does not affect a "*default user*", and it is hence recommended to run this script for all users separately, including new users created afterwards.
 
 # Registry HKCR
 These changes all apply to `HKEY_CLASSES_ROOT`. The only change done here is the addition of the "Open Command Window Here" option under the right-click menu of the File Explorer. This option has a localized name, an icon, and can only be viewed if Shift is held when the right-click menu is opened (to always show the option, remove the lines with `Extended`).
@@ -286,7 +286,7 @@ Changes applied here will enable the classic Windows Photo Viewer. The exact pat
 At the end of this section, the generated registry file is finally applied with `reg import`.
 
 # Legacy Bootloader & Safe Mode
-This command enables the "legacy" Windows 7 boot loader and boot menu options in Windows 10. While this may slow down the startup process by a second or two, it readds the ability to enter the boot menu directly with F8 and use it to enter Safe Mode, which makes the change welcome in the case Safe Mode will become necessary in order to fix an issue.
+This command enables the "legacy" Windows 7 boot loader and boot menu options in Windows 10. While this may slow down the startup process by a second or two, it brings back the ability to enter the boot menu directly with F8 and use it to enter Safe Mode, which makes the change welcome in the case Safe Mode will become necessary in order to fix an issue.
 
 # Uninstall OneDrive
 These two commands run the 32-bit and 64-bit editions of OneDriveSetup.exe with the /uninstall flag, effectively uninstalling OneDrive from the machine, since most users will not have a use for it, and Microsoft is known to advertise OneDrive with notifications as well as in the File Explorer.
@@ -300,7 +300,7 @@ If the config setting `fix10dropbatchutils` is set to `1` (`0` is the default se
 `xqacl` allows starting elevated command lines (and simple commands, but the argument section is not supported), while `xqgod` acts as a shortcut to open the `All Tasks` folder (sometimes called *god mode*). They are dropped under the system directory to ensure that they can be run from the Run dialog and as commands.
 
 # Remove Mixed Reality (if enabled)
-If the config setting `fix10removemixed` is set to `1` (`0` is the default setting), a value called `FirstRunSucceeded` will be created in the registry key `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Holographic4` with the value `0`. This will signify a failure on the first run of Mixed Reality, removing it from Settings and, according to Microsoft, uninstalling it from the computer. It is not known whether this is the case anymore.
+If the config setting `fix10removemixed` is set to `1` (`0` is the default setting), a value called `FirstRunSucceeded` will be created in the registry key `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Holographic4` with the value `0`. This will signify a failure on the first run of Mixed Reality, removing it from Settings and, according to Microsoft, uninstalling it from the computer. It is not known whether this is the case anymore with newer versions of Windows 10.
 
 # Delete Cortana (if enabled)
 If the config setting `fix10delcortana` is set to `1` (`0` is the default setting), the script will literally *delete* Cortana files from the machine. This might cause severe issues later on, especially if later versions of Windows 10 will further tighten the Cortana integration. The exact steps involve finding the folder belonging to the app `Microsoft.Windows.Cortana` under the SystemApps folder, granting the running user full rights and then deleting it. In order to use Cortana again, you would have to reinstall it through PowerShell (`Get-AppXPackage -Name Microsoft.Windows.Cortana | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}`).
@@ -327,9 +327,9 @@ If the config setting `fix10disablehiberboot` is set to `1` (`0` is the default 
 This is especially recommended for multi-boot setups, as Windows volumes might be inaccessible with Fast Startup enabled. This is because if Fast Startup is enabled, Windows never actually *shuts down*, but instead *hibernates*. The problem with Fast Startup is explained in great detail here: https://askubuntu.com/a/452080
 
 # Script complete
-Once the script is complete, the final message is written. If the script was opened in an existing command line, control will be returned, but if the batch script was opened in its own window, the file will enter an infinite loop and ask the user to close the window. 
+Once the script is complete, the script finishes by writing a message to the screen. If the script was opened in an existing command line, control will be returned, but if the batch script was opened in its own window, the file will enter an infinite loop and ask the user to close the window. 
 
-The final message encourages the user to check their privacy settings, provides a command to open them, advises on running the script after every major upgrade and then recommends the user to restart to apply the changes, as it is necessary to do so for some of the changes.
+The final message encourages the user to check their privacy settings, provides a command to open them, advises to run the script after every major upgrade and then recommends the user to restart to apply the changes, as it is necessary to do so for some of the changes.
 
 The final section also includes some subroutines used by the script itself.
 
