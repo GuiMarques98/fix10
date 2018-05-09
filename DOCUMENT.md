@@ -1,6 +1,6 @@
 
 # Fix10.bat full documentation
-## for version 1.2.0
+## for version 1.2.1
 This document provides a list of the changes performed by Fix10.bat, as well as a detailed explanation for each one of them. 
 
 For most of the changes, it is not known whether they are restricted to specific versions of Windows 10 (original, Anniversary, Creators, Fall Creators...) or editions (Home, Pro, Enterprise). If such information is known, it will be indicated for the affected changes.
@@ -65,6 +65,9 @@ The PowerShell command executed under this section adds a new firewall rule that
 # Telemetry stuff
 The somewhat less descriptive section disables the `AutoLogger-Diagtrack-Listener.etl` file by emptying it and preventing the system from modifying it using file permissions. This file is used for tracking event logs and is connected to telemetry, with some even accusing it of being a component of a "*keylogger*".
 
+# Ultimate Performance
+This command enables the Ultimate Performance power mode on Windows 10 Spring Creators Update and above. It is not selected by default, but will be visible under the Power settings.
+
 # taskmgr, regedit, cmd
 This section does a total of six registry changes: all of them involve the policies used to disable the Task Manager, Registry Editor and Command Interpreter. The registry changes simply disable these restrictions, allowing the tools to be used again if blocked that way. 
 
@@ -77,6 +80,8 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU`
 * `AUOptions`=`dword:00000002`
   * Sets the automatic updates to "Notify before download". [(Source)](https://docs.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configure-automatic-updates)
+* `NoAutoUpdate`=`dword:00000000`
+  * Enables automatic updates (but see above setting). [(Source)](https://support.microsoft.com/en-us/help/328010/how-to-configure-automatic-updates-by-using-group-policy-or-registry-s)
 * `AUPowerManagement`=`dword:00000000`
   * Prohibits the system from waking up to perform updates.
 * `NoAutoRebootWithLoggedOnUsers`=`dword:00000001`
@@ -195,6 +200,8 @@ These changes all apply to `HKEY_CURRENT_USER` and therefore only affect the use
   * Shows hidden files in File Explorer.
 * `HideFileExt`=`dword:00000000`
   * Shows all file extensions in File Explorer.
+* `HideDrivesWithNoMedia`=`dword:00000000`
+  * Shows all drives regardless of whether they have media inserted in them.
 * `ShowSyncProviderNotifications`=`dword:00000000`
   * Disables OneDrive and other advertisements, tips and notifications in File Explorer. 
 

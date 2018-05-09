@@ -1,6 +1,6 @@
 @echo off & setlocal & rem https://textu.red/e/win10/
                        rem https://github.com/TeamYogh/fix10
-                       rem Fix10 v1.2.0
+                       rem Fix10 v1.2.1
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -36,10 +36,10 @@ echo  FFF     I     X     1   0 0 0
 echo  F       I    X X    1   0   0
 echo  F     IIIII X   X  111   000
 echo.
-echo v1.2.0                     .bat
+echo v1.2.1                     .bat
 echo ===============================
 echo   TeamYogh, https://textu.red
-echo             2 0 1 7
+echo             2 0 1 8
 echo ===============================
 echo.
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -125,10 +125,11 @@ echo * Opt out from CEIP
 echo * Disable Cortana
 echo * Restore Windows Photo Viewer
 echo * Re-enable Task Manager, Registry Editor and Command Interpreter
+echo * Make Ultimate Performance power mode visible (not selected by default)
 echo * Win+X: PowerShell to CMD
 echo * Re-add CMD to Context menu (if Shift down)
 echo * Enable seconds in the tray
-echo * Show file extensions and hidden files
+echo * Show file extensions, hidden files and all drives
 echo * Disable Data Collection Publishing Service
 echo * Enables Legacy Boot Loader + F8 Safe Mode (!!!)
 echo.
@@ -181,6 +182,10 @@ echo. > AutoLogger-Diagtrack-Listener.etl
 echo Y | cacls AutoLogger-Diagtrack-Listener.etl /d SYSTEM
 popd
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Ultimate Performance
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+powercfg /duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// taskmgr, regedit, cmd
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\System /v DisableTaskMgr /t REG_DWORD /d 0 /f
@@ -203,6 +208,15 @@ echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU] >
 echo "AUOptions"=dword:00000002 >> %TEMP%\fix10bat.reg
 echo "AUPowerManagement"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "NoAutoRebootWithLoggedOnUsers"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo "NoAutoUpdate"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "RebootRelaunchTimeout"=dword:000005a0 >> %TEMP%\fix10bat.reg
+echo "RebootRelaunchTimeoutEnabled"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo. >> %TEMP%\fix10bat.reg
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\WindowsUpdate\AU] >> %TEMP%\fix10bat.reg
+echo "AUOptions"=dword:00000002 >> %TEMP%\fix10bat.reg
+echo "AUPowerManagement"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "NoAutoRebootWithLoggedOnUsers"=dword:00000001 >> %TEMP%\fix10bat.reg
+echo "NoAutoUpdate"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "RebootRelaunchTimeout"=dword:000005a0 >> %TEMP%\fix10bat.reg
 echo "RebootRelaunchTimeoutEnabled"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
@@ -289,6 +303,7 @@ echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advan
 echo "DontUsePowerShellOnWinX"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo "Hidden"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo "HideFileExt"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "HideDrivesWithNoMedia"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "ShowSyncProviderNotifications"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\CloudContent] >> %TEMP%\fix10bat.reg

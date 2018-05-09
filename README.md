@@ -37,10 +37,11 @@ The changes are described in more detail in `DOCUMENT.md`.
 * Disable Cortana
 * Restore Windows Photo Viewer ([source](https://www.tenforums.com/tutorials/14312-restore-windows-photo-viewer-windows-10-a.html))
 * Re-enable Task Manager, Registry Editor and Command Interpreter
+* Make Ultimate Performance power mode visible (not selected by default)
 * Win+X: PowerShell to CMD
 * Re-add CMD to Context menu (if Shift down)
 * Enable seconds in the tray
-* Show file extensions and hidden files
+* Show file extensions, hidden files and all drives
 * Disable Data Collection Publishing Service
 * Enables Legacy Boot Loader + F8 Safe Mode 
   * This might slow down booting by a few seconds, but it enables Advanced Boot Options, and I consider it a fair trade-off.
