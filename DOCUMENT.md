@@ -91,6 +91,9 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 * `RebootRelaunchTimeoutEnabled`=`dword:00000001`
   * Makes the change above effective. [(Source)](https://technet.microsoft.com/en-us/library/cc708449(v=ws.10).aspx)
 
+## `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\WindowsUpdate\AU`
+* Same registry values as above.
+
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update`
 * `AUOptions`=`dword:00000002`
   * The same as under `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU`.
