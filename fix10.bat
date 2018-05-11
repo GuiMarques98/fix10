@@ -183,7 +183,7 @@ popd
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Ultimate Performance
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
-powercfg /duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
+powercfg /L | find /c /i "Ultimate Performance" >nul || powercfg /duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// taskmgr, regedit, cmd
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
