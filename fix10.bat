@@ -1,5 +1,4 @@
-@echo off & setlocal & rem https://textu.red/e/win10/
-                       rem https://github.com/TeamYogh/fix10
+@echo off & setlocal & rem https://github.com/ziplantil/fix10
                        rem Fix10 v1.2.2
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
@@ -38,7 +37,7 @@ echo  F     IIIII X   X  111   000
 echo.
 echo v1.2.2                     .bat
 echo ===============================
-echo         TeamYogh   2018
+echo         ziplantil  2018
 echo ===============================
 echo.
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
