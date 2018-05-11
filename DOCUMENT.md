@@ -8,7 +8,7 @@ For most of the changes, it is not known whether they are restricted to specific
 The documentation will be provided in sections ordered according to their order of appearance in the source code of the batch file itself.
 
 # Disclaimer
-The batch file in question requires administrative privileges to run on a system and is intended to only be run on Windows 10. Regardless of conditions, the script is run at your own risk, and TeamYogh cannot be responsible for increased boot times (will likely happen) or, perhaps even worse, features removed from the system or the system refusing to function or start up properly, or any other adverse side effects. By running the batch file, you accept that you have read this disclaimer and understand its and the script's consequences.
+The batch file in question requires administrative privileges to run on a system and is intended to only be run on Windows 10. Regardless of conditions, the script is run at your own risk, and the author of fix10.bat cannot be responsible for increased boot times (will likely happen) or, perhaps even worse, features removed from the system or the system refusing to function or start up properly, or any other adverse side effects. By running the batch file, you accept that you have read this disclaimer and understand its and the script's consequences.
 
 # Initialization
 The batch script requires administrative rights and checks whether the OS being run is Windows 10, with a warning if Windows 10 is not detected. If the batch script does not have administrative rights, it will attempt to elevate itself.
