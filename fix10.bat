@@ -1,6 +1,6 @@
 @echo off & setlocal & rem https://textu.red/e/win10/
                        rem https://github.com/TeamYogh/fix10
-                       rem Fix10 v1.2.1
+                       rem Fix10 v1.2.2
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -36,10 +36,9 @@ echo  FFF     I     X     1   0 0 0
 echo  F       I    X X    1   0   0
 echo  F     IIIII X   X  111   000
 echo.
-echo v1.2.1                     .bat
+echo v1.2.2                     .bat
 echo ===============================
-echo   TeamYogh, https://textu.red
-echo             2 0 1 8
+echo         TeamYogh   2018
 echo ===============================
 echo.
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -146,7 +145,7 @@ echo Some changes may require a reboot afterwards.
 echo Some stuff may not work on 10 Home/Pro!
 echo.
 echo Hit Ctrl-C and Y or close the window to cancel
-echo Do the above, if you are not 100% sure!
+echo        Cancel if you are not 100%% sure!
 echo.
 pause
 :nofix10intro
@@ -811,13 +810,19 @@ echo.
 :closewindow
 pause >NUL 2>NUL
 goto closewindow
-:setdefault                 rem call :setdefault value key
-if defined %2 goto :eof     rem   Runs `set key=value` if key is 
-set %2=%1                   rem   not already defined
+rem call :setdefault value key
+rem   Runs `set key=value` if key is 
+rem   not already defined
+:setdefault                 
+if defined %2 goto :eof     
+set %2=%1                   
 goto :eof
-:getsecondparameter         rem call :getsecondparameter A B C D ...
-set CMDFLAG=%2              rem   Stores second parameter given (B)
-goto :eof                   rem   to variable named CMDFLAG
+rem call :getsecondparameter A B C D ...
+rem   Stores second parameter given (B)
+rem   to variable named CMDFLAG
+:getsecondparameter        
+set CMDFLAG=%2              
+goto :eof                   
 :endscript
 pause
 :endscriptnokey

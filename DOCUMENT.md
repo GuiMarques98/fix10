@@ -1,6 +1,6 @@
 
 # Fix10.bat full documentation
-## for version 1.2.1
+## for version 1.2.2
 This document provides a list of the changes performed by Fix10.bat, as well as a detailed explanation for each one of them. 
 
 For most of the changes, it is not known whether they are restricted to specific versions of Windows 10 (original, Anniversary, Creators, Fall Creators...) or editions (Home, Pro, Enterprise). If such information is known, it will be indicated for the affected changes.
