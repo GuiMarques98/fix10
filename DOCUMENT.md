@@ -234,6 +234,10 @@ These changes all apply to `HKEY_CURRENT_USER` and therefore only affect the use
   * Disables "*Get tips, tricks, and suggestions as you use Windows*" [(Source)](https://www.reddit.com/r/sysadmin/comments/7bl1f2/has_anyone_found_a_canonical_mapping_of_windows/)
 * `SubscribedContent-338393Enabled`=`dword:00000000`
   * Disables "*Show me suggested content in the Settings app*" [(Source)](https://www.reddit.com/r/sysadmin/comments/7bl1f2/has_anyone_found_a_canonical_mapping_of_windows/)
+* `SubscribedContent-353694Enabled`=`dword:00000000`
+  * Disables suggested content in the Settings app.
+* `SubscribedContent-353696Enabled`=`dword:00000000`
+  * Disables suggested content in the Settings app.
 * `SystemPaneSuggestionsEnabled`=`dword:00000000`
   * Disables app suggestions in the Start Menu.
 
