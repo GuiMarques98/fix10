@@ -1,6 +1,6 @@
 
 # Fix10.bat full documentation
-## for version 1.2.2
+## for version 1.2.3
 This document provides a list of the changes performed by Fix10.bat, as well as a detailed explanation for each one of them. 
 
 For most of the changes, it is not known whether they are restricted to specific versions of Windows 10 (original, Anniversary, Creators, Fall Creators...) or editions (Home, Pro, Enterprise). If such information is known, it will be indicated for the affected changes.
@@ -126,10 +126,6 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata`
 * `PreventDeviceMetadataFromNetwork`=`dword:00000001`
   * Prevents Windows from retrieving device metadata online.  [(Source)](https://docs.microsoft.com/en-us/windows/configuration/manage-connections-from-windows-operating-system-components-to-microsoft-services)
-
-## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender`
-* `DisableAntiSpyware`=`dword:00000001`
-  * Disables Windows Defender. You may want to disable this change by commenting out the lines if the computer will be actively used by non-power users. 
 
 ## `HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\CloudContent`
 * `DisableSoftLanding`=`dword:00000001`
@@ -308,6 +304,22 @@ These two commands modify the `Reboot` task template used by Windows Update, wit
 If the config setting `fix10dropbatchutils` is set to `1` (`0` is the default setting), two batch files (so far) are dropped under `%SYSTEMROOT%` (usually `C:\Windows`) called `xqacl.bat` and `xqgod.bat`. 
 
 `xqacl` allows starting elevated command lines (and simple commands, but the argument section is not supported), while `xqgod` acts as a shortcut to open the `All Tasks` folder (sometimes called *god mode*). They are dropped under the system directory to ensure that they can be run from the Run dialog and as commands.
+
+# Disable Windows Defender (if enabled)
+If the config setting `fix10nodefender` is set to `1` (`1` is the default setting), Windows Defender will be disabled by registry changes.
+
+## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender`
+* `DisableAntiSpyware`=`dword:00000001`
+  * Disables Windows Defender.
+* `DisableRealtimeMonitoring`=`dword:00000001`
+  * Disables Windows Defender real-time monitoring.
+## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection`
+* `DisableBehaviorMonitoring`=`dword:00000001`
+  * Disables Windows Defender behavior monitoring.
+* `DisableOnAccessProtection`=`dword:00000001`
+  * Disables Windows Defender on-access protection.
+* `DisableScanOnRealtimeEnable`=`dword:00000001`
+  * Disables Windows Defender process scanning.
 
 # Remove Mixed Reality (if enabled)
 If the config setting `fix10removemixed` is set to `1` (`0` is the default setting), a value called `FirstRunSucceeded` will be created in the registry key `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Holographic4` with the value `0`. This will signify a failure on the first run of Mixed Reality, removing it from Settings and, according to Microsoft, uninstalling it from the computer. It is not known whether this is the case anymore with newer versions of Windows 10.

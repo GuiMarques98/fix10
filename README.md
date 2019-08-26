@@ -18,7 +18,6 @@ The changes are described in more detail in `DOCUMENT.md`.
 
 * Disable diagnostics and tracking services
 * Disable advertisements and "tips"
-* Disable Windows Defender
 * Try to set Updates to Ask before Download
 * Disable Windows Update automatic restarts
 * Uninstall and disable OneDrive
@@ -50,8 +49,10 @@ The changes are described in more detail in `DOCUMENT.md`.
 
 The batch file has a configuration section at the beginning with a few options. These options allow the following:
 
+* fix10nodefender (0 disables, 1 enables **(default)**)
+  * If enabled, disables Windows Defender.
 * fix10dropbatchutils (0 disables (default), 1 enables)
-  * Drops two files, xqacl.bat and xqgod.bat under System32, which add the xqacl and xqgod commands for the Run dialog and terminals. xqacl allows opening an elevated command line, while xqgod opens the All Tasks "god mode" window.
+  * If enabled, drops two files, xqacl.bat and xqgod.bat under System32, which add the xqacl and xqgod commands for the Run dialog and terminals. xqacl allows opening an elevated command line, while xqgod opens the All Tasks "god mode" window.
 * fix10removemixed (0 disables (default), 1 enables) 
   * If enabled, sets the Holographic FirstRunSucceeded flag to 0. If the computer is restarted with this flag, Mixed Reality should be automatically uninstalled from the computer.
 * fix10delcortana (0 disables (default), 1 enables) 

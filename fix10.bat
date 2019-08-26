@@ -1,5 +1,5 @@
 @echo off & setlocal & rem https://github.com/ziplantil/fix10
-                       rem Fix10 v1.2.2
+                       rem Fix10 v1.2.3
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -7,6 +7,8 @@ rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem Unless otherwise noted, 0 disables and 1 enables, 0 is default
 rem              | change only this column under this section!
 
+rem Enable disabling Windows Defender
+call :setdefault 1 fix10nodefender
 rem Enable dropping under %SYSTEMROOT%\System32 (for Run & cmd):
 rem   xqacl.bat: opens an elevated command prompt at given location
 rem   xqgod.bat: opens the All Tasks directory
@@ -35,9 +37,9 @@ echo  FFF     I     X     1   0 0 0
 echo  F       I    X X    1   0   0
 echo  F     IIIII X   X  111   000
 echo.
-echo v1.2.2                     .bat
+echo v1.2.3                     .bat
 echo ===============================
-echo         ziplantil  2018
+echo         ziplantil  2019
 echo ===============================
 echo.
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -154,6 +156,7 @@ rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 sc config dmwappushsvc start= disabled
 sc config Dmwappushservice start= disabled
 sc config "Diagnostics Tracking Service" start= disabled
+sc config "Connected User Experiences and Telemetry" start= disabled
 sc config DiagTrack start= disabled
 sc config diagnosticshub.standardcollector.service start= disabled
 sc config TrkWks start= disabled
@@ -246,9 +249,6 @@ echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata] >> %TEMP%\fix10bat.reg
 echo "PreventDeviceMetadataFromNetwork"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
-echo [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender] >> %TEMP%\fix10bat.reg
-echo "DisableAntiSpyware"=dword:00000001 >> %TEMP%\fix10bat.reg
-echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\CloudContent] >> %TEMP%\fix10bat.reg
 echo "DisableSoftLanding"=dword:00000001 >> %TEMP%\fix10bat.reg
 echo "DisableWindowsConsumerFeatures"=dword:00000001 >> %TEMP%\fix10bat.reg
@@ -322,6 +322,8 @@ echo "SubscribedContent-338387Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338388Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338389Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SubscribedContent-338393Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SubscribedContent-353694Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
+echo "SubscribedContent-353696Enabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo "SystemPaneSuggestionsEnabled"=dword:00000000 >> %TEMP%\fix10bat.reg
 echo. >> %TEMP%\fix10bat.reg
 echo [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Input\TIPC] >> %TEMP%\fix10bat.reg
@@ -710,6 +712,16 @@ rem ///////////////// Disable Automatic Reboot
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 for /f %%a in ('powershell -Command Get-Date -format yyyyMMdd_HHmmss') do set datetime=%%a
 move "%windir%\System32\Tasks\Microsoft\Windows\UpdateOrchestrator\Reboot" "%windir%\System32\Tasks\Microsoft\Windows\UpdateOrchestrator\Reboot_DisableByFix10Bat_%datetime%"
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+rem ///////////////// Disable Defender (if enabled)
+rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
+if not %fix10nodefender% == 1 goto fix10_nonodefender
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableAntiSpyware" /t REG_DWORD /d "1" /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableRealtimeMonitoring" /t REG_DWORD /d "1" /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "1" /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /t REG_DWORD /d "1" /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableScanOnRealtimeEnable" /t REG_DWORD /d "1" /f
+:fix10_nonodefender
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Batch utilities (if enabled)
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
