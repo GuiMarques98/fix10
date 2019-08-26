@@ -105,7 +105,6 @@ echo This batch file will:
 echo.
 echo * Disable diagnostics and tracking services
 echo * Disable advertisements and "tips"
-echo * Disable Windows Defender
 echo * Try to set Updates to Ask before Download
 echo * Disable Windows Update automatic restarts
 echo * Uninstall and disable OneDrive
@@ -132,6 +131,9 @@ echo * Enable seconds in the tray
 echo * Show file extensions, hidden files and all drives
 echo * Disable Data Collection Publishing Service
 echo * Enables Legacy Boot Loader + F8 Safe Mode (!!!)
+echo.
+echo Modify the file to disable (enabled by default):
+echo * Disable Windows Defender
 echo.
 echo Modify the file to enable (disabled by default):
 echo * Drops batch utilities
