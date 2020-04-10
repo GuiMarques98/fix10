@@ -1,11 +1,12 @@
 
 # Fix10.bat full documentation
-## for version 1.2.3
+## for version 1.3.0
 This document provides a list of the changes performed by Fix10.bat, as well as a detailed explanation for each one of them. 
 
 For most of the changes, it is not known whether they are restricted to specific versions of Windows 10 (original, Anniversary, Creators, Fall Creators...) or editions (Home, Pro, Enterprise). If such information is known, it will be indicated for the affected changes.
 
-The documentation will be provided in sections ordered according to their order of appearance in the source code of the batch file itself.
+The documentation will be provided in sections ordered according to their order of appearance in the source code of the batch file itself. If you
+want to disable some of the features listed below, simply edit the fix10.bat file and remove or comment out the lines corresponding to that action.
 
 # Disclaimer
 The batch file in question requires administrative privileges to run on a system and is intended to only be run on Windows 10. Regardless of conditions, the script is run at your own risk, and the author of fix10.bat cannot be responsible for increased boot times (will likely happen) or, perhaps even worse, features removed from the system or the system refusing to function or start up properly, or any other adverse side effects. By running the batch file, you accept that you have read this disclaimer and understand its and the script's consequences.
@@ -25,6 +26,8 @@ The service in question is used to upload telemetry information to Microsoft's s
 Disabling the service is used as a preventive measure to block any data from being sent. The drawbacks of leaving such telemetry on include its intrusiveness, questionable impact on privacy, and active usage of the active network connection (especially a problem on metered or limited connections). 
 
 ## dmwappushsvc, Dmwappushservice
+*Since v1.3.0, these services are no longer automatically disabled by Fix10, but you can uncomment the lines if you want to.*
+
 This service is the WAP Push Message Routing Service. Microsoft has not documented this service extensively, but it is used for system bootstrapping and provisioning, and is often also considered to be connected with telemetry (see the service above), so it is often recommended to disable it along DiagTrack.
 
 **Important note: disabling this service will break the *sysprep* script: the script will simply freeze.** To fix this issue, simply enable the service again with the following command under the Command Line running as an administrator: `sc config Dmwappushsvc start= auto & net start Dmwappushsvc`
@@ -110,7 +113,7 @@ These changes all apply to `HKEY_LOCAL_MACHINE` and are therefore global for the
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection`
 ## `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\CurrentVersion\DataCollection`
 * `AllowTelemetry`=`dword:00000000`
-  * Sets the Telemetry level to Security, which according to Microsoft, will transmit "[i]nformation that’s required to help keep Windows, Windows Server, and System Center secure, including data about the Connected User Experience and Telemetry component settings, the Malicious Software Removal Tool, and Windows Defender." [(Source)](https://docs.microsoft.com/en-us/windows/configuration/configure-windows-telemetry-in-your-organization)
+  * Sets the Telemetry level to Security, which according to Microsoft, will transmit "[i]nformation that’s required to help keep Windows, Windows Server, and System Center secure, including data about the Connected User Experience and Telemetry component settings, the Malicious Software Removal Tool, and Windows Defender." Note that this is equal to "Basic" on Windows 10 Home and Pro. [(Source)](https://docs.microsoft.com/en-us/windows/configuration/configure-windows-telemetry-in-your-organization)
 * `DoNotShowFeedbackNotifications`=`dword:00000001`
   * Disables feedback notifications sent by or via the Feedback app. [(Source)](https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#experience-donotshowfeedbacknotifications)
 

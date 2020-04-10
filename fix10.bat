@@ -1,5 +1,5 @@
 @echo off & setlocal & rem https://github.com/ziplantil/fix10
-                       rem Fix10 v1.2.3
+                       rem Fix10 v1.3.0
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Config
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
@@ -155,8 +155,9 @@ pause
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 rem ///////////////// Disable services
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
-sc config dmwappushsvc start= disabled
-sc config Dmwappushservice start= disabled
+rem These two are disabled by default; see DOCUMENT.md
+rem sc config dmwappushsvc start= disabled
+rem sc config Dmwappushservice start= disabled
 sc config "Diagnostics Tracking Service" start= disabled
 sc config "Connected User Experiences and Telemetry" start= disabled
 sc config DiagTrack start= disabled
@@ -730,12 +731,15 @@ rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 if not %fix10dropbatchutils% == 1 goto fix10_nodropbatchutils 
 echo. > %SYSTEMROOT%\System32\xqacl.bat
 echo. > %SYSTEMROOT%\System32\xqgod.bat
+echo. > %SYSTEMROOT%\System32\xqacl_.ps1
 echo @echo off >> %SYSTEMROOT%\System32\xqacl.bat
 echo if not %%1.==. goto gotargs >> %SYSTEMROOT%\System32\xqacl.bat
-echo powershell -Command Start-Process cmd -Verb runas -WorkingDirectory "%%cd%%" -ArgumentList /k,cd,"%%cd%%" >> %SYSTEMROOT%\System32\xqacl.bat
+echo powershell -Command Start-Process -FilePath $env:ComSpec -Verb runas -WorkingDirectory "%%cd%%" -ArgumentList /k,cd,"%%cd%%" >> %SYSTEMROOT%\System32\xqacl.bat
 echo goto :eof >> %SYSTEMROOT%\System32\xqacl.bat
 echo :gotargs >> %SYSTEMROOT%\System32\xqacl.bat
-echo powershell -Command Start-Process cmd -Verb runas -WorkingDirectory "%%cd%%" -ArgumentList /c,%%* >> %SYSTEMROOT%\System32\xqacl.bat
+echo $workdir, $params = $args >> %SYSTEMROOT%\System32\xqacl_.ps1
+echo Start-Process -FilePath "$env:ComSpec" -Verb runas -WorkingDirectory "$workdir" -ArgumentList "/c $params" >> %SYSTEMROOT%\System32\xqacl_.ps1
+echo powershell -ExecutionPolicy bypass %%SYSTEMROOT%%\System32\xqacl_.ps1 %%cd%% %%* >> %SYSTEMROOT%\System32\xqacl.bat
 echo @start "" "explorer" "shell:::{ED7BA470-8E54-465E-825C-99712043E01C}" >> %SYSTEMROOT%\System32\xqgod.bat
 :fix10_nodropbatchutils 
 rem /=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
